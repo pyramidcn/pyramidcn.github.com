@@ -190,3 +190,6 @@ ul.posts {
   #related h2 {
     margin-bottom: 1em;
   }
+#post p{
+    text-indent: 2em;
+}
