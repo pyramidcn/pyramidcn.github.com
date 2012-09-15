@@ -1,2 +1,6 @@
 markdown: rdiscount
 pygments: true
+
+# for site global
+title: pyramid中文文档、手册
+author: luchanghong
