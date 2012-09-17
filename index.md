@@ -75,4 +75,4 @@ title: Pyramidcn
 [1.1]: 2012/09/15/pyramid-introduction.html#what-makes-pyramid-unique "是什么让 Pyramid 是独一无二"
 [1.1.1]: 2012/09/15/pyramid-introduction.html#single-file-applications "单文件应用"
 [1.1.2]: 2012/09/15/pyramid-introduction.html#decorator-based-configuration "基于修饰符的配置"
-[1.1.3]: 2012/09/15/pyramid-introduction.html#"基于修饰符的配置"
+[1.1.3]: 2012/09/15/pyramid-introduction.html#url-generation "基于修饰符的配置"
