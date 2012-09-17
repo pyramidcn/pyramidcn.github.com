@@ -5,6 +5,14 @@ title: Pyramid 介绍
 
 ## Pyramid 介绍
 
+**框架 VS 库**
+
+一个 *框架* 和一个 *库* 最大的区别在于：库里面的代码被你写的代码 *调用* ，而框架则是 *调用* 你写的代码。
+使用一系列的库来创建应用程序通常在刚开始的时候要比使用矿建简单，因为你可以有选择性地放弃一些控制权给不是你写的库代码。
+但是当你使用一个框架的时候，你必须放弃绝大部分的控制权交给那些不是你写的代码：整个框架。你不是必须使用一个框架来创建
+一个 WEB 应用程序在使用 Python 的情况下。一大批丰富的库都被已经被开发出来。然而在实际应用中，使用框架去创建应用要比
+使用一系列的库更加实用，如果这个框架提供的一些列功能都符合你的项目要求。
+    
 Pyramid 是一个通用、开源的 Python 网络应用程序开发框架。它主要的目的是让 Python 开发者更简单的创建网络应用程序。
 
 Pyramid 倾向以下设计哲学和理念：
@@ -56,3 +64,56 @@ Pyramid 一直在谨慎的开发和细致的测试。对于任何和 Pyramid 有
 为了这个目的，Pyramid 提供一系列的特性，他们结合起来就是 Python WEB 框架里独一无二的。许多其他的框架也都包含其中一些特性
 ；Pyramid 构建的过程也从那些框架中借鉴许多。但是只有 Pyramid 把他们全部集中应用的，合适的文档记录，使用其中某个功能而
 不必知道全部。这些会在下面详谈。
+
+#### <a id="single-file-applications"></a> 单文件应用
+
+你可以写一个 Pyramid 应用，只寄生于一个 Python 文件，而不是像 Python microframework。看懂这些应用程序很容易，因为所有
+关于应用程序的信息都集中在一个地方，你可以在不用了解 Python 发行版本和包的情况下去部署它们。Pyramid 不是以一个 
+microframework 推向市场的，但是它能像 microframework 那样允许你做几乎所有的事情。
+
+   
+    from wsgiref.simple_server import make_server
+    from pyramid.config import Configurator
+    from pyramid.response import Response
+
+    def hello_world(request):
+       return Response('Hello %(name)s!' % request.matchdict)
+
+    if __name__ == '__main__':
+       config = Configurator()
+       config.add_route('hello', '/hello/{name}')
+       config.add_view(hello_world, route_name='hello')
+       app = config.make_wsgi_app()
+       server = make_server('0.0.0.0', 8080, app)
+       server.serve_forever()
+
+参见 *[创建你的第一个 Pyramid 应用](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/firstapp.html#firstapp-chapter, "创建你的第一个 Pyramid 应用")*
+
+#### <a id="decorator-based-configuration"></a> 基于修饰符的配置
+
+如果你不想来回切换代码文件和框架的配置文件，而是喜欢将配置语句写在对应代码的旁边，那么你可以使用 Pyramid 修饰符来本地化
+配置。例如：
+
+    from pyramid.view import view_config
+    from pyramid.response import Response
+
+    @view_config(route_name='fred')
+    def fred_view(request):
+        return Response('fred')
+
+然而，不像其他系统，使用修饰符来配置 Pyramid 并不会使你的应用变得难以扩展、测试或者重用。比如，`view_config`，它实际上并
+没有改变它所修饰的方法的输入输出，所以测试是一个*"所见即所得"*的操作；你不需要了解整个框架就可以测试你的代码，尽管无视
+修饰符好了。你也可以申明让 Pyramid 忽略掉修饰符，或者全部使用命令语句代替修饰符来增加 views 方法。Pyramid 的修饰符是被动的
+而不是主动的：你要使用 scan 来发现并且激活它们。
+
+例如：*[使用 @view_config 修饰符来增加一个 View 配置](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/viewconfig.html#mapping-views-using-a-decorator-section, "使用 @view_config 修饰符来增加一个 View 配置")*
+
+#### <a id="url-generation"></a> URL 产生机制
+
+Pyramid 可以为资源、路由，以及静态资源产生 URL。它的 URL 生成 API 使用简单而且灵活。如果你使用 Pyramid 多种 API 来生成 URL
+，你可以随意的改变配置而不用担心会破坏页面内的链接。
+
+例如：[生成路由 URL](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/urldispatch.html#generating-route-urls, "生成路由 URL")
+
+#### <a id="url-generation"></a> URL 产生机制
+
