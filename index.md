@@ -3,6 +3,8 @@ layout: default
 title: Pyramidcn
 ---
 
+#Pyramid 1.3 中文文档手册
+
 ## [Pyramid 介绍][1]
 
 - [是什么让 Pyramid 是独一无二][1.1]
@@ -17,7 +19,7 @@ title: Pyramidcn
 
     - [调试工具栏][1.1.5]
 
-    - [调试配置][1.1.6]
+    - [调试器配置][1.1.6]
 
     - [组件][1.1.7]
 
@@ -75,4 +77,8 @@ title: Pyramidcn
 [1.1]: 2012/09/15/pyramid-introduction.html#what-makes-pyramid-unique "是什么让 Pyramid 是独一无二"
 [1.1.1]: 2012/09/15/pyramid-introduction.html#single-file-applications "单文件应用"
 [1.1.2]: 2012/09/15/pyramid-introduction.html#decorator-based-configuration "基于修饰符的配置"
-[1.1.3]: 2012/09/15/pyramid-introduction.html#url-generation "基于修饰符的配置"
+[1.1.3]: 2012/09/15/pyramid-introduction.html#url-generation "URL 产生机制"
+[1.1.4]: 2012/09/15/pyramid-introduction.html#static-file-serving "静态文件服务"
+[1.1.5]: 2012/09/15/pyramid-introduction.html#debug-toolbar "调试工具栏"
+[1.1.6]: 2012/09/15/pyramid-introduction.html#debugging-settings "调试器配置"
+

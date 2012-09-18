@@ -87,7 +87,7 @@ microframework 推向市场的，但是它能像 microframework 那样允许你�
        server = make_server('0.0.0.0', 8080, app)
        server.serve_forever()
 
-参见 *[创建你的第一个 Pyramid 应用](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/firstapp.html#firstapp-chapter, "创建你的第一个 Pyramid 应用")*
+参见 *[创建你的第一个 Pyramid 应用](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/firstapp.html#firstapp-chapter "创建你的第一个 Pyramid 应用")*
 
 #### <a id="decorator-based-configuration"></a> 基于修饰符的配置
 
@@ -106,14 +106,32 @@ microframework 推向市场的，但是它能像 microframework 那样允许你�
 修饰符好了。你也可以申明让 Pyramid 忽略掉修饰符，或者全部使用命令语句代替修饰符来增加 views 方法。Pyramid 的修饰符是被动的
 而不是主动的：你要使用 scan 来发现并且激活它们。
 
-例如：*[使用 @view_config 修饰符来增加一个 View 配置](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/viewconfig.html#mapping-views-using-a-decorator-section, "使用 @view_config 修饰符来增加一个 View 配置")*
+例如：*[使用 @view_config 修饰符来增加一个 View 配置](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/viewconfig.html#mapping-views-using-a-decorator-section "使用 @view_config 修饰符来增加一个 View 配置")*
 
 #### <a id="url-generation"></a> URL 产生机制
 
 Pyramid 可以为资源、路由，以及静态资源产生 URL。它的 URL 生成 API 使用简单而且灵活。如果你使用 Pyramid 多种 API 来生成 URL
 ，你可以随意的改变配置而不用担心会破坏页面内的链接。
 
-例如：[生成路由 URL](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/urldispatch.html#generating-route-urls, "生成路由 URL")
+例如：*[生成路由 URL](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/urldispatch.html#generating-route-urls "生成路由 URL")*
 
-#### <a id="url-generation"></a> URL 产生机制
+#### <a id="static-file-serving"></a> 静态文件服务
+
+Pyramid 是非常愿意为静态文件服务的。它不会让你使用一些外部服务器来做这件事。你甚至可以在一个 Pyramid 应用程序中提供不止一组静态文件的服务（例如/static 和 /static2 ）。你也可以有选择性地把文件存放在外部的一台 WEB 服务器上，并且使用 Pyramid 帮助你生成对应文件的 URL ，这样你既可以在开发中使用 Pyramid 的内部静态文件服务，又可以在生成环境中得到一台更快的静态文件服务器而不必做任何代码的改变。
+
+例如：*[静态资源服务](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/assets.html#static-assets-section "静态资源服务")*
+
+#### <a id="debug-toolbar"></a> 调试工具栏
+
+当你使用 Pyramid scaffold 构建项目的时候就会激活 Pyramid 的调试工具栏。在浏览器中，工具栏会浮动在应用程序的上面并且允许你获取一些框架的数据比如：路由配置、最后一次执行结果、当前安装包、SQLAlchemy 执行的查询、logging 数据，以及其他的实时信息。当有异常发生的时候，你可以在浏览器中查看调试器的结果来确定导致异常的原因。它是很方便的。
+
+#### <a id="debugging-settings"></a> 调试器配置
+
+Pyramid 允许你设置调试器来把运行时的信息输出到控制台当你觉得程序不按照你预期执行的时候。比如，你可以打开 `debug_notfound` 来输出没有匹配到视图的 URL 。你可以打开 `debug_authorization`，看到输出的信息就知道为何一个视图允许或者拒绝你执行。这些特性在 WTF 的时候都是很有用的。
+
+也可以在一个 Pyramid 环境下执行一些命令来检测系统的配置：`proutes` 来查看所有的路由配置以及是否有应用程序和它们匹配；`pviews` 来查看所有 URL 的视图配置。某些情况下这些命令都能干掉 WTF 。
+
+例如：*[视图授权失败调试](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/security.html#debug-authorization-section "视图授权失败调试")* 和 *[Pyramid 命令行](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/commandline.html#command-line-chapter "Pyramid 命令行")*
+
+
 
