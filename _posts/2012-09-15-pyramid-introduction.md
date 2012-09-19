@@ -133,5 +133,50 @@ Pyramid 允许你设置调试器来把运行时的信息输出到控制台当你
 
 例如：*[视图授权失败调试](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/security.html#debug-authorization-section "视图授权失败调试")* 和 *[Pyramid 命令行](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/commandline.html#command-line-chapter "Pyramid 命令行")*
 
+#### <a id="add-ons"></a> 组件
+
+Pyramid拥有一批和 Pyramid 自身核心组建一样高质量的扩展组件。这些组件以 package 的形式提供 Pyramid 核心没有的功能。已经有发邮件、jinja2 模板系统、XML-RPC 或者 JSON-RPC、整合 jQuery Mobile等一些扩展组件包。
+
+例如：*[http://docs.pylonsproject.org/docs/pyramid.html#pyramid-add-on-documentation](http://docs.pylonsproject.org/docs/pyramid.html#pyramid-add-on-documentation)*
+
+#### <a id="class-based-and-function-based-views"></a> 基于类和方法的视图模型
+
+Pyramid 有一个统一、结构化的 **view callable** 概念。View callables 可以是函数、类的方法，或者一个实例。当你增加一个新的 view callable 的时候，你可以选择让它成为一个函数、一个类里面的方法；无论哪种方式，Pyramid 处理的方式大致相同。你可以把代码在函数和类的方法里面来回移动当你改变想法以后。一系列的 view callable 可以作为方法构成一个类，如果你高兴的话还可以让他们共享一些初始化的代码。所有的 views 都很容易理解和使用，操作也都类似。它们没有什么区别，都可以达到你的目的。
+
+这是一个定义成为函数的 view callable：
+
+    from pyramid.response import Response
+    from pyramid.view import view_config
+
+    @view_config(route_name='aview')
+    def aview(request):
+        return Response('one')
+
+这是几个作为类里面的方法定义的 view callable：
+
+    from pyramid.response import Response
+    from pyramid.view import view_config
+
+    class AView(object):
+        def __init__(self, request):
+            self.request = request
+
+        @view_config(route_name='view_one')
+        def view_one(self):
+            return Response('one')
+
+        @view_config(route_name='view_two')
+        def view_two(self):
+            return Response('two')
+
+参见：*[@view_config 的位置](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/viewconfig.html#view-config-placement "@view_config 的位置")*
+
+#### <a id="asset-specification"></a> 规范资源
+
+规范的资源是一个包含 Python 包名和文件名或者路径的字符串，比如：`MyPackage:static/index.html`。这种规范写法在 Pyramid 中无处不在。资源规范涉及到模板、目录，或者任何一个静态的资源包。这样使得基于 Pyramid 构建的系统扩展性很强，因为你不必依赖全局设置（“静态目录”）或者查找（“给模板目录排序”）来定位你的文件。你可以移动需要的文件，包含其他的一些没有向你共享模板资源或者静态文件的包也不会有冲突。
+
+因为规范资源在 Pyramid 中使用很多，我们也提供一种允许用户覆盖资源的方式。如果你喜欢一个别人用 Pyramid 创建的系统，那么你只需“改变一个模板”就会让它更好。不用 fork 这个应用程序，只需要用你自己的东西替换模板中的规范的资源，你可以开干了。
+
+例如：*[理解 Asset Specification](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/assets.html#asset-specifications)* 和 *[ Overriding Assets](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/assets.html#overriding-assets-section)*
 
 

@@ -25,7 +25,7 @@ title: Pyramidcn
 
     - [基于类和方法的视图模型][1.1.8]
 
-    - [资产规格][1.1.9]
+    - [规范资源][1.1.9]
     
     - [模板扩展][1.1.10]
     
@@ -81,4 +81,7 @@ title: Pyramidcn
 [1.1.4]: 2012/09/15/pyramid-introduction.html#static-file-serving "静态文件服务"
 [1.1.5]: 2012/09/15/pyramid-introduction.html#debug-toolbar "调试工具栏"
 [1.1.6]: 2012/09/15/pyramid-introduction.html#debugging-settings "调试器配置"
+[1.1.7]: 2012/09/15/pyramid-introduction.html#add-ons "组件"
+[1.1.8]: 2012/09/15/pyramid-introduction.html#class-based-and-function-based-views "基于类和方法的视图模型"
+[1.1.9]: 2012/09/15/pyramid-introduction.html#asset-specification "规范资源"
 
