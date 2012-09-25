@@ -29,11 +29,11 @@ title: Pyramidcn
     
     - [模板扩展][1.1.10]
     
-    - [使用 renderer 视图可以返回一个字典][1.1.11]
+    - [视图渲染器可以返回字典][1.1.11]
     
     - [事件系统][1.1.12]
 
-    - [国际化的内建][1.1.13]
+    - [内建国际化][1.1.13]
 
     - [HTTP 缓存][1.1.14]
 
@@ -84,4 +84,9 @@ title: Pyramidcn
 [1.1.7]: 2012/09/15/pyramid-introduction.html#add-ons "组件"
 [1.1.8]: 2012/09/15/pyramid-introduction.html#class-based-and-function-based-views "基于类和方法的视图模型"
 [1.1.9]: 2012/09/15/pyramid-introduction.html#asset-specification "规范资源"
+[1.1.10]: 2012/09/15/pyramid-introduction.html#extensiable-templating "模板扩展"
+[1.1.11]: 2012/09/15/pyramid-introduction.html#rendered-views-can-return-dictionaries "视图渲染器可以返回字典"
+[1.1.12]: 2012/09/15/pyramid-introduction.html#event-system "事件系统"
+[1.1.13]: 2012/09/15/pyramid-introduction.html#built-in-internationalization "内建国际化"
+[1.1.14]: 2012/09/15/pyramid-introduction.html#http-caching "HTTP 缓存"
 

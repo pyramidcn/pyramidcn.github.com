@@ -179,4 +179,60 @@ Pyramid 有一个统一、结构化的 **view callable** 概念。View callables
 
 例如：*[理解 Asset Specification](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/assets.html#asset-specifications)* 和 *[ Overriding Assets](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/assets.html#overriding-assets-section)*
 
+#### <a id="extensiable-templating"></a> 模板扩展
+
+Pyramid 有一个允许扩展“renderers”的API。像Mako、GEnshi、Chameleon，以及jinja2 这样的模板系统都可以作为renderers（渲染器）。绑定在这些模板系统上的渲染器都已经被使用在 Pyramid 里了。如果你想用其他的，也未尝不可。只需拷贝一个已经存在的 renderer package 代码，然后配置在你喜欢的模板系统里面，那么就像你用 Pyramid 内建的模板系统一样来使用你这个（自己配置的）模板系统。
+
+Pyramid 并不只让你使用单一的模板系统，甚至你可以使用多个模板系统在同一个项目里。
+
+例如：*[马上使用模板](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/templates.html#templates-used-directly)*
+
+#### <a id="rendered-views-can-return-dictionaries"></a> 视图渲染器可以返回字典
+
+如果你使用一个 renderer ，你不必从一个 view 里返回“webby”这种 Response 对象，而是用一个 dictionary 代替，Pyramid 会代表你使用模板做好从 dictionary 到 Response 的转换。这会让 view 测试更简单，因为你不必解析 HTML；只需在他返回的 dictionary 中使用一个 assertion 来代替视图返回的“the right stuff”（正确的结果）。你可以写“真正”的单元测试来代替视图的功能测试了。
+
+例如，要取代这个：
+
+    from pyramid.renderers import render_to_response
+
+    def myview(request):
+        return render_to_response('myapp:templates/mytemplate.pt', {'a':1}, 
+                                    request=request)
+
+你这样写：
+
+    from pyramid.view import view_config
+
+    @view_config(renderer='myapp:templates/mytemplate.pt')
+    def myview(request):
+        return {'a':1}
+
+当上面的 view 被调用的时候，`{'a': 1}`将会被 render 到 Response 里。上面 `renderer = `传递的参数是一个 asset specification ，形如`packagename:directoryname/filename.ext`。这种情况下，它指向的 mytemplate.pt 这个文件在 myapp 这个包的 templates 目录下。
+
+例如：*[Renderers](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/renderers.html#renderers-chapter)*
+
+#### <a id="event-system"></a> 事件系统
+
+Pyramid 释放出 event 在它处理 request 的周期内。你可以监听任意数量的 events 。比如，你可以通过监听 NewRequest 事件来知晓一个新的 request ，监听 BeforeRender 事件而被告知一个模板将被渲染，等等。用一个事件发布系统代替硬编码消息钩子作为框架消息通知功能会使框架系统更健壮。
+
+同样你可以使用 Pyramid 事件系统发送“你自己的”事件。比如，你想创建的系统本身就是一个框架，你想通知订阅者一个文档刚刚被加入到索引，那么你可以创建你自己的事件系统（或许就叫做DocumentIndexed）然后通过 Pyramid 发送这个事件。框架的用户就会像订阅 pyramid 自身的事件一样订阅到你的事件。
+
+例如：*[使用事件](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/events.html#events-chapter)* 和 *[事件类型](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/api/events.html#event-types)*
+
+#### <a id="built-in-internationalization"></a> 内建国际化
+
+Pyramid 核心特性搭载国际化关系特性：本地化、多元化，创建消息目录从源文件到模板。Pyramid 允许重复的消息目录通过使用 translation domains：你可以创建一个有它自己译文而不和其他语言的译文有冲突的系统。
+
+例如：*[国际化和本地化](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/i18n.html#i18n-chapter)*
+
+#### <a id="http-caching"></a> HTTP 缓存
+
+Pyramid 提供一种简单的方式去关联视图和HTTP缓存。你只需加上视图配置语句 `http_cache` 来告诉 Pyramid，那么接下的就交给它来处理了，例如：
+
+    @view_config(http_cache=3600) # 60 minutes
+    def myview(request): ....
+
+Pyramid 会增加 `Cache-Control` 和 `Expires` 来响应被调用是生成的视图。
+
+
 
