@@ -234,5 +234,41 @@ Pyramid 提供一种简单的方式去关联视图和HTTP缓存。你只需加�
 
 Pyramid 会增加 `Cache-Control` 和 `Expires` 来响应被调用是生成的视图。
 
+参考 [add_view()](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/api/config.html#pyramid.config.Configurator.add_view) 方法的 http_cache 文档介绍。
 
+#### <a id="sessions"></a> Session 会话
+
+Pyramid 有内建的 HTTP session ，这使得你能够把数据和匿名用户的请求关联起来，许多框架系统都会做这个。但是 Pyramid 还会允许你按照文档接口创建代码去配置你自己的 session system 。目前存在的有一个绑定包支持第三方 Beaker sessioning system，如果你有特殊的需求（或许你想要把 session 存储在 mongodb 里面），这也是可以的。你可以来回切换（session 存储的方式）而不用改变应用的代码。
+
+参考：*[Sessions](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/sessions.html#sessions-chapter)*
+
+#### <a id="speed"></a> 速度
+
+Pyramid 的核心，据我们所知，至少比 python 其他 WEB framework 要快一点。它是为了速度而精心设计的，它只会尽可能地做必须的工作当你让它去干活的时候。外部函数调用和次优的算法在其核心 codepaths 中都被避免，从一个简单的 pyramid view 上每秒3500至4000次请求，在一个普通的双核笔记本电脑上并且配上一个合适的WSGI server（mod_wsgi或者gunicore）是OK的。任何情况下，没有需求和目标下的性能数据基本上都是没用的，但是如果你追求速度，Pyramid 将永远不会是你的瓶颈，至少不会超过 python 的瓶颈。
+
+参考：*[http://blog.curiasolutions.com/the-great-web-framework-shootout/](http://blog.curiasolutions.com/the-great-web-framework-shootout/)*
+
+#### <a id="exception-views"></a> 异常视图
+
+异常发生，Pyramid 允许你注册一个异常视图，并不是以特别的方式把他们呈现给线上的用户。异常视图和正常视图一样的，但他们只在 Pyramid 自身有异常“抛出”的时候才被调用。例如，你可以为异常注册一个能够捕捉到所有异常的视图，然后呈现一个“well, this is embarrassing”页面；或者你只为特定类型的 application-specific 异常注册异常视图，比如一个找不到指定文件的异常或者因为用户没有权限而不能执行一个操作的异常。前一种情况下，你可以呈现一个漂亮的“Not Found”页面；后一种情况你可以显示一个登陆框。
+
+参考：*[客户端异常视图](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/views.html#exception-views)*
+
+#### <a id="no-singletons"></a> No singletons
+
+Pyramid 是按照这种方式写的：它要求你的应用没有任何的“singletons”数据结构。换句话说，Pyramid 不需要你构建任何“mutable globals”，或者另一种说法，导入一个 Pyramid 应用的时候不会有任何“导入时的副作用”。如果你曾尝试处理一个 Django “settings.py”文件去做同一个应用的多次安装，或者你需要给框架做一些补丁以满足实际情况的需求，再或者你想用 asynchronous server 部署你的系统，那么这（no singletons）是一个好消息，你最终也会越来越欣赏这个特性。它不是个难题，你可以在一个python 进程中运行多个配置不相同的类似pyramid 应用程序，这是有利于主机空间共享的。（感觉这翻译的不是太好！）
+
+#### <a id="view-predicates-and-many-views-per-route"></a> 视图谓词以及多个视图对应一个路由
+
+不像其他系统，Pyramid 允许你一个 route 关联多个 view 。例如，你可以创建一个 `/items` 模式的 route ，当这个 route 被匹配到的时候，你可以把 request 传给一个 view 如果 request 的方式是 GET ，或者给另一个 view 如果 request 的方式是 POST ，等等。一个被称为“view predicates”的系统会允许这样做。请求方式匹配是非常重要且基本的方式，你可以以此做一个 view predicate。你也可以用其他 request 参数比如查询字符串中的元素、Accept Header等许多东西来关联匹配一个视图，无论 request 是 XHR （XML Http Request）与否。这个特性会让你的视图保持“clean”，他们不需要很多的逻辑条件，因此也很容易测试。
+
+参考：*[视图配置参数](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/viewconfig.html#view-configuration-parameters)*
+
+#### <a id="transaction-management"></a> 事务管理
+
+Pyramid 的 scaffold 系统呈现的项目包含一个事务管理系统，从 Zope 借鉴而来。当你使用这个事务管理系统的时候，你就不再负责提交数据了，而由 Pyramid 来处理commit：它在 request 结束的时候 commit，或者终止于异常。为什么这是一件好事情？集中事务管理是一个好事情。如果集中管理事务，你散置 session.commit 当被应用程序逻辑本身调用的时候，然后在一个糟糕的地方结束。无论你在哪儿手动向数据库提交数据，其他一些代码很可能在提交之后运行，如果这些代码要去做其他重要的事情，一旦不小心出错就会导致程序停止之后得到的数据不一致，一些不需要入库的数据可能会被写入数据库。用集中提交就会帮你从上面的问题中解脱出来，这对于那些关心数据完整性的懒人来说简直棒极了。要么请求被成功执行并且多有改变都被提交，否则执行失败的话，所以改变都会终止提交。
+
+同时，Pyramid 的事务管理系统允许你在多个数据库直接同步提交，也可以允许在一个事物的提交下有条件的发送邮件，但是其他都保持安静。
+
+参考：*[SQLAlchemy + URL Dispatch Wiki Tutorial](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/tutorials/wiki2/index.html#bfg-sql-wiki-tutorial)*（注意程序里缺少提交语句的代码）
 

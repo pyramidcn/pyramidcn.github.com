@@ -43,7 +43,7 @@ title: Pyramidcn
 
     - [异常视图][1.1.17]
 
-    - [没有独立单元][1.1.18]
+    - [No singletons][1.1.18]
 
     - [视图谓词以及多个视图对应一个路由][1.1.19]
 
@@ -89,4 +89,11 @@ title: Pyramidcn
 [1.1.12]: 2012/09/15/pyramid-introduction.html#event-system "事件系统"
 [1.1.13]: 2012/09/15/pyramid-introduction.html#built-in-internationalization "内建国际化"
 [1.1.14]: 2012/09/15/pyramid-introduction.html#http-caching "HTTP 缓存"
+[1.1.15]: 2012/09/15/pyramid-introduction.html#sessions "Session 会话"
+[1.1.16]: 2012/09/15/pyramid-introduction.html#speed "速度"
+[1.1.17]: 2012/09/15/pyramid-introduction.html#exception-views "异常视图"
+[1.1.18]: 2012/09/15/pyramid-introduction.html#no-singletons "No singletons"
+[1.1.19]: 2012/09/15/pyramid-introduction.html#view-predicates-and-many-views-per-route "视图谓词以及多个视图对应一个路由"
+[1.1.20]: 2012/09/15/pyramid-introduction.html#transaction-management "事务管理"
+
 
