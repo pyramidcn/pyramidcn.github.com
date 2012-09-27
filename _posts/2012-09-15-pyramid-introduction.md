@@ -272,4 +272,29 @@ Pyramid 的 scaffold 系统呈现的项目包含一个事务管理系统，从 Z
 
 参考：*[SQLAlchemy + URL Dispatch Wiki Tutorial](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/tutorials/wiki2/index.html#bfg-sql-wiki-tutorial)*（注意程序里缺少提交语句的代码）
 
+#### <a id="configuration-conflict-detection"></a> 冲突检测配置
+
+一个小系统，你可以轻松的把它的一切装在脑袋里。随着系统的扩展壮大，可能有成千上百的配置语句包括增加一个 view 、route等等。Pyramid 的文件配置系统会一直跟踪检测这些配置语句，如果你不小心添加两个一样的配置，Pyramid 在启动的时候将不能明白同时激活两个同样的配置而报错。但它却不是哑巴：它会自动解决冲突配置如果你使用 `include()`方式包含配置信息：“more local”的配置语句优先级高于“less local”的配置语句（include进来的）。你可以明智地把一个大系统分解成一下小系统。
+
+参考：*[冲突检测](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/advconfig.html#conflict-detection)*
+
+#### <a id="configuration-extensiability"></a> 配置的可扩展性
+
+和其他系统不一样的是，Pyramid 提供一个可以让你从一些其他python packages 构建应用的“include”机制。所有在你的“main”应用程序里能执行的配置语句，在被其他 package 包含之后也能够执行，包括添加 views、routes、subscribers，甚至验证和授权机制。你可以通过包含另外一个应用的配置信息来扩展或者覆盖你现有的项目，覆盖或者增加新的view和route，这允许你用一些小应用构成一个大应用。例如，你想重用一个现有项目里面的一路 route ，你只需使用带`route_prefix`的`include`语句去包含，那么你的应用就出现一个带着 URL 前缀的新应用。这个并不麻烦，几乎不用什么前期工作，例如：
+
+    from pyramid.config import Configurator
+
+    if __name__ == '__main__':
+        config = Configurator()
+        config.include('pyramid_jinja2')
+        config.include('pyramid_exclog')
+        config.include('some.other.guys.package', route_prefix='/someotherguy')
+
+参考：*[从外部资源获取配置](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/advconfig.html#including-configuration)* 和 *[构建一个扩展系统的规则](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/extending.html#building-an-extensible-app)*
+
+#### <a id="flexible-authentication-and-authorization"></a> 灵活的身份验证和授权
+
+Pyramid 有一个灵活的、插件式的验证和授权系统。无论你的用户数据存储在哪、你喜欢用什么方式去允许用户访问数据，你可以使用一个预定义的插件来配置客户端的验证和授权代码。如果你以后想改变这种方式，你只需要改变一个地方的代码而不是到处都要修改，同样它附带已构建好的验证和授权方式。但是如果你不喜欢 Pyramid 的内建系统，你可以自己想其他系统那样自己写安全验证的代码。
+
+参考：*[使用一个授权策略](http://docs.pylonsproject.org/projects/pyramid/en/1.3-branch/narr/security.html#enabling-authorization-policy)*
 

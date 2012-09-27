@@ -95,5 +95,7 @@ title: Pyramidcn
 [1.1.18]: 2012/09/15/pyramid-introduction.html#no-singletons "No singletons"
 [1.1.19]: 2012/09/15/pyramid-introduction.html#view-predicates-and-many-views-per-route "视图谓词以及多个视图对应一个路由"
 [1.1.20]: 2012/09/15/pyramid-introduction.html#transaction-management "事务管理"
-
+[1.1.21]: 2012/09/15/pyramid-introduction.html#configuration-conflict-detection "冲突检测配置"
+[1.1.22]: 2012/09/15/pyramid-introduction.html#configuration-extensiability "配置的可扩展性"
+[1.1.23]: 2012/09/15/pyramid-introduction.html#flexible-authentication-and-authorization "灵活的身份验证和授权"
 
