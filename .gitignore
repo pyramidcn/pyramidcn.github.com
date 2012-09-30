@@ -1,4 +1,5 @@
 _sources/
+_static/
 .DS_Store
 *.swp
 _site/
