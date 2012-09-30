@@ -2,3 +2,4 @@ _sources/
 .DS_Store
 *.swp
 _site/
+_change_static.py
