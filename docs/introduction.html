@@ -338,6 +338,89 @@ def goodbyeview(request):
 </div>
 <p>Pyramid 默认显示传递，因为它是最常用的，但是提供的 hooks 允许你调整框架达到本地代码审美的欲望。</p>
 </div>
+<div class="section" id="global">
+<h3>&#8220;Global&#8221;响应对象<a class="headerlink" href="#global" title="Permalink to this headline">¶</a></h3>
+<p>“在 view callables 里面构建这些响应对象真是苦差事！我懒得按照前一节说的那样去注册一个响应适配器。”，你说。那只能如此：</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">aview</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">response</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="s">&#39;Hello world!&#39;</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">content_type</span> <span class="o">=</span> <span class="s">&#39;text/plain&#39;</span>
+    <span class="k">return</span> <span class="n">response</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id21">
+<h3>自动复制配置<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<p>是否你想过冒险减少 Pyramid 冗长的配置信息？或者你想提供给 Pyramid 用户一些手动配置功能而不需改变 Pyramid ？那么你可以用你自己的指令去扩展 Pyramid 的 Configurator 。例如，假设你发现你重复的调用 <tt class="docutils literal"><span class="pre">pyramid.config.Configurator.add_view()</span></tt> 这个方法，通常你会走捷径避开这无聊的重复，但是我们假设你面对一种无捷径可走的情况：</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyramid.config</span> <span class="kn">import</span> <span class="n">Configurator</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s">&#39;xhr_route&#39;</span><span class="p">,</span> <span class="s">&#39;/xhr/{id}&#39;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="s">&#39;my.package.GET_view&#39;</span><span class="p">,</span> <span class="n">route_name</span><span class="o">=</span><span class="s">&#39;xhr_route&#39;</span><span class="p">,</span>
+                <span class="n">xhr</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>  <span class="n">permission</span><span class="o">=</span><span class="s">&#39;view&#39;</span><span class="p">,</span> <span class="n">request_method</span><span class="o">=</span><span class="s">&#39;GET&#39;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="s">&#39;my.package.POST_view&#39;</span><span class="p">,</span> <span class="n">route_name</span><span class="o">=</span><span class="s">&#39;xhr_route&#39;</span><span class="p">,</span>
+                <span class="n">xhr</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&#39;view&#39;</span><span class="p">,</span> <span class="n">request_method</span><span class="o">=</span><span class="s">&#39;POST&#39;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="s">&#39;my.package.HEAD_view&#39;</span><span class="p">,</span> <span class="n">route_name</span><span class="o">=</span><span class="s">&#39;xhr_route&#39;</span><span class="p">,</span>
+                <span class="n">xhr</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s">&#39;view&#39;</span><span class="p">,</span> <span class="n">request_method</span><span class="o">=</span><span class="s">&#39;HEAD&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>相当冗长是吧？你可以给 Pyramid Configurator 增加一个指令来自动化这个乏味的过程：</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyramid.config</span> <span class="kn">import</span> <span class="n">Configurator</span>
+
+<span class="k">def</span> <span class="nf">add_protected_xhr_views</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">maybe_dotted</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;HEAD&#39;</span><span class="p">):</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s">&#39;xhr_</span><span class="si">%s</span><span class="s">_view&#39;</span> <span class="o">%</span> <span class="n">method</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">route_name</span><span class="o">=</span><span class="s">&#39;xhr_route&#39;</span><span class="p">,</span> <span class="n">xhr</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                           <span class="n">permission</span><span class="o">=</span><span class="s">&#39;view&#39;</span><span class="p">,</span> <span class="n">request_method</span><span class="o">=</span><span class="n">method</span><span class="p">)</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">()</span>
+<span class="n">config</span><span class="o">.</span><span class="n">add_directive</span><span class="p">(</span><span class="s">&#39;add_protected_xhr_views&#39;</span><span class="p">,</span> <span class="n">add_protected_xhr_views</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>一旦完成上面的定义之后，你就可以调用刚刚添加的作为 Configurator 对象的一个方法的指令：</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">config</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s">&#39;xhr_route&#39;</span><span class="p">,</span> <span class="s">&#39;/xhr/{id}&#39;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">add_protected_xhr_views</span><span class="p">(</span><span class="s">&#39;my.package&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>你以前重复配置的多行现在变成了一行。</p>
+<p>你可以把配置代码打包然后调用 <tt class="docutils literal"><span class="pre">add_directive()</span></tt> 来共享配置当其他用户用 <tt class="docutils literal"><span class="pre">include()</span></tt> 方法获取你的配置的时候。</p>
+</div>
+<div class="section" id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
+<p>每一个 Pyramid 的发行版本都声明100%经过单元测试和集成测试，通过 PyPI 上的 <tt class="docutils literal"><span class="pre">coverage</span></tt> 工具测量，超过95%的决定/条件测试覆盖率通过 <tt class="docutils literal"><span class="pre">instrumental</span></tt> 工具测量。它会在每次提交到它的 Github 仓库之后使用 Jenkins 工具在 Python 2.6、2.7、3.2上自动测试。官方 Pyramid 组件持有类似的测试标准。我们仍然会在 Pyramid 和 它的官方组件里面发现 bug ，但是我们曾注意到工作在没有经过一个好的测试机制的项目上时会出现更多的 bug 。</p>
+</div>
+<div class="section" id="support">
+<h3>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h3>
+<p>这是我们的目标：没有未被解答的 Pyramid 问题。无论你在 IRC 上、Pylons-discuss 邮件列表上、还是在 Stackoverflow 上，你都可能得到一个相当迅速的回答。</p>
+<p>访问 <a class="reference external" href="irc://freenode.net#pyramid">irc://freenode.net#pyramid</a> 或者 pylons-discuss maillist <a class="reference external" href="http://groups.google.com/group/pylons-discuss/">http://groups.google.com/group/pylons-discuss/</a> 。</p>
+</div>
+<div class="section" id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<p>这是一个长期坚持的过程，我们努力权衡文档完整性和新手的适应性（欢迎具体的建议）。我们也在撰写一个“cookbook”用以示范常用脚本，把具体的增加到官方文档中去。无论如何，Pyramid 文档都要做到完善。</p>
+<p>Pyramid cookbook： <a class="reference external" href="http://docs.pylonsproject.org/projects/pyramid_cookbook/dev/">http://docs.pylonsproject.org/projects/pyramid_cookbook/dev/</a> 。</p>
+</div>
+</div>
+<div class="section" id="pylons">
+<h2>Pylons 项目是什么？<a class="headerlink" href="#pylons" title="Permalink to this headline">¶</a></h2>
+<p>Pyramid 是 Pylons 项目下面一系列已经发行的软件中的一员。Pylons 软件项目是一群宽松的社区成员编写的。 <a class="reference external" href="http://pylonsproject.org/">Pylons 官网</a> 描述了 Pyramid 和 Pylons Project 的关系。</p>
+</div>
+<div class="section" id="pyramid-web">
+<h2>Pyramid 和其他 web 框架<a class="headerlink" href="#pyramid-web" title="Permalink to this headline">¶</a></h2>
+<p>第一个 Pyramid 版本的前生（叫做 <em>repoze.bfg</em> ）创建于 2008 年。2010 年末，我们把 <em>repoze.bfg</em> 改名为 Pyramid 并于同年11月份合并到 Pylons
+项目中。</p>
+<p>Pyramid 的灵感来源于 Zope、Pylons 1.0 和 Django ，最终，Pyramid 向它们各自借鉴一些概念和特性并组成一个独特的框架。</p>
+<p>Pyramid 的许多特性都要追溯到 Zope 。像 Zope 应用程序一样，Pyramid 应用程序是易于扩展的：如果你遵守一定的规则，那么你的应用程序将会被重用、改进、重构，甚至被第三方开发者扩展而不用 fork 原始程序。 Traversal 和 declarative security 等概念都是在 Zope 中首先被提出来的。</p>
+<p>Pyramid 的 URL dispatch 概念受 Pylons 1.0 版本的 Routes 系统启发的，Pyramid 像 Pylons 1.0 版本一样采用自由政策。它没有指定你应该使用哪个数据库，它的内置模板只是为了方便。实际上，它仅仅提供一种将 URL 映射到 view 代码上的机制，以及调用那些 views 的规则。你可以免费使用第三方组件来满足你项目的需求。</p>
+<p>Pyramid 经常使用的 view 这一概念来自 Django 。Pyramid 的文档风格比起 Zope 更像 Django 。</p>
+<div class="sidebar">
+<p class="first sidebar-title">你说 Pyramid 是 MVC 框架，但是 controller 在哪？</p>
+<p class="last">Pyramid 的作者不认为 MVC 模式很适合 web 。在一个 Pyramid 项目里面，有一个代表站点结构和views的资源树，常出现在数据存储以及用户自定义“domain model”中。然而，框架里并没有提供需要映射到“controller”和“model”的概念。如果你非要给它一个描述，我猜你说 Pyramid 是一个 “RV” 框架比 “MVC” 框架更实际。然而 “MVC” ，作为一般的分类称谓来对比其他的 web framework 是足够的了。</p>
+</div>
+<p>类似 Pylons 1.0 版本，却不像 Zope ，一个 Pyramid 应用程序开发者可以使用一个完整的语句命令去执行一个框架常用的配置任务比如增加一个 view 或者一个 route 。在 Zope 里面 ZCML 也有类似功能。Pyramid 支持随时可用的命令语句配置和基于修饰符的配置；ZCML 通过一个扩展包 <em>pyramd_zcml</em> 使用。</p>
+<p>既不像 Zope ，也不像 “full-stack” 这样的框架比如 Django ，Pyramid 对于你使用哪一种持续化的机制构建应用程序不做任何假设。Zope 应用程序依赖于 ZODB；Pyramid 也允许你创建 ZODB 程序但却不依赖 ZODB 本身。同样，Django 倾向于假定你想要把你的应用程序数据存储在一个关系型数据库中。Pyramid 从不做这些假设，它允许你使用关系型数据库但是不鼓励也不阻止的决定。</p>
+<p>其他的 Python web framework 都宣称他们自己是一个类成员 web framework 叫做 <a class="reference external" href="http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">model-view-controller</a> 框架，Pyramid 也属于这一类。</p>
 </div>
 </div>
 
@@ -375,8 +458,15 @@ def goodbyeview(request):
 <li><a class="reference internal" href="#traversal">Traversal</a></li>
 <li><a class="reference internal" href="#tweens">Tweens</a></li>
 <li><a class="reference internal" href="#id20">视图响应适配器</a></li>
+<li><a class="reference internal" href="#global">&#8220;Global&#8221;响应对象</a></li>
+<li><a class="reference internal" href="#id21">自动复制配置</a></li>
+<li><a class="reference internal" href="#testing">Testing</a></li>
+<li><a class="reference internal" href="#support">Support</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#pylons">Pylons 项目是什么？</a></li>
+<li><a class="reference internal" href="#pyramid-web">Pyramid 和其他 web 框架</a></li>
 </ul>
 </li>
 </ul>
