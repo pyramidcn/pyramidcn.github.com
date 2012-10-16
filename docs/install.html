@@ -1,0 +1,246 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>安装 Pyramid &mdash; pyramid 1.3 documentation</title>
+    
+    <link rel="stylesheet" href="../static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <link rel="top" title="pyramid 1.3 documentation" href="../index.html" />
+    <link rel="prev" title="Pyramid 介绍" href="introduction.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="introduction.html" title="Pyramid 介绍"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyramid 1.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pyramid">
+<span id="installing-chapter"></span><h1>安装 Pyramid<a class="headerlink" href="#pyramid" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="index-0">
+<span id="id1"></span><h2>安装之前说明<a class="headerlink" href="#index-0" title="Permalink to this headline">¶</a></h2>
+<div class="sidebar">
+<p class="first sidebar-title">Python 版本</p>
+<p class="last">在撰写本文档时，Pyramid 已经在 Python 2.6.6 、Python 2.7.2 和 Python 3.2 版本下测试过，不支持任何 2.6 以前的版本。</p>
+</div>
+<p>你需要 <a class="reference external" href="http://python.org">Python</a> 2.6或者更适合的版本来运行 Pyramid 。</p>
+<p>Pyramid 可以运行在所有流行的 UNIX-like 操作系统上，比如 Linux 、Mac OS X 以及 FreeBSD ，同样也适用于 Windows 操作系统。它也可以在 PyPy 1.6+ 版本上运行。</p>
+<div class="section" id="python-unix">
+<h3>如果你还未安装 Python（UNIX）<a class="headerlink" href="#python-unix" title="Permalink to this headline">¶</a></h3>
+<p>安装 Python 的方法就不过多介绍了。</p>
+<div class="highlight-text"><div class="highlight"><pre>$ sudo apt-get install python2.6-dev
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-windows">
+<h3>如果你还未安装 Python（Windows）<a class="headerlink" href="#python-windows" title="Permalink to this headline">¶</a></h3>
+<p>此处也不过多介绍了。</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">在 Windows 下安装完 Python 之后，需要把 Python 安装目录添加到环境变量中去， <tt class="docutils literal"><span class="pre">我的电脑</span></tt> &#8211;&gt; <tt class="docutils literal"><span class="pre">属性</span></tt> &#8211;&gt; <tt class="docutils literal"><span class="pre">高级</span></tt> &#8211;&gt; <tt class="docutils literal"><span class="pre">环境变量</span></tt> 。</p>
+</div>
+</div>
+</div>
+<div class="section" id="unix-pyramid">
+<span id="installing-unix"></span><span id="index-1"></span><h2>在 UNIX 操作系统下安装 Pyramid<a class="headerlink" href="#unix-pyramid" title="Permalink to this headline">¶</a></h2>
+<p>最好是把 Pyramid 安装在一个“虚拟”的 Python 环境里面，这样就可以把安装的 package 和 Python “系统” package 隔离开，我们可以使用 virtualenv 来完成。此外， virtualenv 还可以阻止和系统 Python 版本不兼容的 package 的安装。</p>
+<p>创建一个能安装 Pyramid 的 virtualenv ，首先要保证安装了 setuptools 。在你想要运行 Pyramid 的 Python 解释器下调用 <tt class="docutils literal"><span class="pre">import</span> <span class="pre">setuptools</span></tt> ：</p>
+<div class="highlight-text"><div class="highlight"><pre>[chrism@vitaminf pyramid]$ python
+Python 2.6.5 (r265:79063, Apr 29 2010, 00:31:32)
+[GCC 4.4.3] on linux2
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import setuptools
+</pre></div>
+</div>
+<p>如果执行 <tt class="docutils literal"><span class="pre">import</span> <span class="pre">setuptools</span></tt> 成功，那么说明你已经安装，否则就要手动安装了。我们是在 Mac OS X 上使用的 Python 2.6-series 版本，可能由于你的 Python 版本以及操作系统的不同而导致输出结果有所不同。</p>
+<p>如果你使用“系统”自带的 Python （系统预装的或者第三方软件管理包安装的，如 Fink 和 MacPorts ），你可以用系统软件包管理工具来安装 setuptools 。如果你自己手动安装的 Python ，那么你就手动安装 setuptools 。不管软件管理包是否有一个 pre-chewed 版本的 setuptools ，你再手动安装一个 setuptools 总是有必要的。</p>
+<p>手动安装 setuptools ，你需要下载 <a class="reference external" href="http://peak.telecommunity.com/dist/ez_setup.py">ez_setup.py</a> ，然后在你想安装 setuptools 的 Python 解释器里执行：</p>
+<div class="highlight-text"><div class="highlight"><pre>$ python ez_setup.py
+</pre></div>
+</div>
+<p>一旦上面的命令被执行， setuptools 就应该被安装了。如果出现权限错误的话，就执行：</p>
+<div class="highlight-text"><div class="highlight"><pre>$ sudo python ez_setup.py
+</pre></div>
+</div>
+<div class="section" id="virtualenv">
+<h3>安装 virtualenv<a class="headerlink" href="#virtualenv" title="Permalink to this headline">¶</a></h3>
+<p>安装 setuptools 之后，使用 <tt class="docutils literal"><span class="pre">easy_install</span></tt> 命令来安装 virtualenv ：</p>
+<div class="highlight-text"><div class="highlight"><pre>$ easy_install virtualenv
+</pre></div>
+</div>
+<p>如果权限问题就使用：</p>
+<div class="highlight-text"><div class="highlight"><pre>$ sudo easy_install virtualenv
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>创建一个虚拟 Python 环境<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>安装完 virtualenv 之后就可以创建一个虚拟的环境了。参考下面步骤：</p>
+<div class="highlight-text"><div class="highlight"><pre>$ virtualenv --no-site-packages env
+New python executable in env/bin/python
+Installing setuptools.............done.
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">在生成虚拟环境的时候使用 <tt class="docutils literal"><span class="pre">no-sit-packages</span></tt> 是非常 <em>重要</em> 的，这为运行 Pyramid 一系列的组件包提供必要的隔离。如果不加 <tt class="docutils literal"><span class="pre">no-site-packages</span></tt> ，Pyramid 可能不会正确的安装在虚拟环境中，即使安装上了，在运行的时候也可能出错，这取决于你已经安装在 Python 的“主” site-packages 目录下的包。</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><em>不要</em> 使用 <tt class="docutils literal"><span class="pre">sudo</span></tt> 来执行 <tt class="docutils literal"><span class="pre">virtualenv</span></tt> 命令。作为一个普通用户，创建一个虚拟环境是可以接受的。</p>
+</div>
+<p>你可以执行虚拟环境目录 env/bin 目录下面的所有命令。</p>
+</div>
+<div class="section" id="pyramid-python">
+<h3>安装 Pyramid 到虚拟 Python 环境中<a class="headerlink" href="#pyramid-python" title="Permalink to this headline">¶</a></h3>
+<p>在你安装玩虚拟环境之后，你就可以按照下面的命令来安装 Pyramid 了（env 是上一步中安装虚拟环境的目录）：</p>
+<p>这个 <tt class="docutils literal"><span class="pre">easy_install</span></tt> 将花费很长的时间，因为它要下载并安装一些依赖的数据包。</p>
+</div>
+</div>
+<div class="section" id="windows-pyramid">
+<h2>在 Windows 操作系统下安装 Pyramid<a class="headerlink" href="#windows-pyramid" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">安装 Python 2.6</p>
+</li>
+<li><p class="first">安装 <a class="reference external" href="http://sourceforge.net/projects/pywin32/files/">Python for Windows extensions</a> ，要和 Python 版本保持一致（可以省略此步骤）。</p>
+</li>
+<li><p class="first">安装 setuptools ，参考上面的获取/安装/创建步骤：下载 <a class="reference external" href="http://peak.telecommunity.com/dist/ez_setup.py">ez_setup.py</a> 然后用 <tt class="docutils literal"><span class="pre">python</span></tt> 解释器执行下面命令：</p>
+<div class="highlight-text"><div class="highlight"><pre>c:\&gt; c:\Python26\python ez_setup.py
+</pre></div>
+</div>
+</li>
+<li><p class="first">安装 virtualenv</p>
+<div class="highlight-text"><div class="highlight"><pre>c:\&gt; c:\Python26\Scripts\easy_install virtualenv
+</pre></div>
+</div>
+</li>
+<li><p class="first">使用 virtualenv 创建一个工作区</p>
+<div class="highlight-text"><div class="highlight"><pre>c:\&gt; c:\Python26\Scripts\virtualenv --no-site-packages env
+</pre></div>
+</div>
+</li>
+<li><p class="first">选择 <em>env</em> 目录</p>
+<div class="highlight-text"><div class="highlight"><pre>c:\&gt; cd env
+</pre></div>
+</div>
+</li>
+<li><p class="first">在当前 shell 激活虚拟环境</p>
+<div class="highlight-text"><div class="highlight"><pre>c:\env&gt; Scripts\activate.bat
+</pre></div>
+</div>
+</li>
+<li><p class="first">安装 Pyramid 和它依赖的数据包</p>
+<div class="highlight-text"><div class="highlight"><pre>c:\env&gt; Scripts\easy_install pyramid
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="id4">
+<h2>都有什么被安装？<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>当你使用 <tt class="docutils literal"><span class="pre">easy_install</span> <span class="pre">pyramid</span></tt> 的时候，一些其他的库比如 WebOB 、PasteDeploy 等都被安装。</p>
+<p>此外，像 <em class="xref std std-ref">project_narr</em> 阐述的那样，scaffolds 将会被注册，这样会使启动一个 Pyramid Project 变得简单。</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">安装 Pyramid</a><ul>
+<li><a class="reference internal" href="#index-0">安装之前说明</a><ul>
+<li><a class="reference internal" href="#python-unix">如果你还未安装 Python（UNIX）</a></li>
+<li><a class="reference internal" href="#python-windows">如果你还未安装 Python（Windows）</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#unix-pyramid">在 UNIX 操作系统下安装 Pyramid</a><ul>
+<li><a class="reference internal" href="#virtualenv">安装 virtualenv</a></li>
+<li><a class="reference internal" href="#id2">创建一个虚拟 Python 环境</a></li>
+<li><a class="reference internal" href="#pyramid-python">安装 Pyramid 到虚拟 Python 环境中</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#windows-pyramid">在 Windows 操作系统下安装 Pyramid</a></li>
+<li><a class="reference internal" href="#id4">都有什么被安装？</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="introduction.html"
+                        title="previous chapter">Pyramid 介绍</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/docs/install.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="introduction.html" title="Pyramid 介绍"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyramid 1.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, luchanghong.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
